@@ -21,3 +21,17 @@ joint landmarks and estimated two-dimensional joint angles.
 - docs: design documents and written work
 - experiments: experiment notes and results
 - src: reusable Python code
+
+## Current notebooks
+
+See [the notebook index](notebooks/README.md) for the earlier-week course
+notebooks, the latest successful Chapter 4 execution, and the current
+Milestone 4/5 notebooks.
+
+The temporary MIPDS task recognizes seven exercise types from public side-view
+recordings. Run Milestone 4 first to export the fine-tuned model and original
+participant split, then run Milestone 5 for detection and spatial features.
+Both milestone notebooks still require execution and result-based journal
+responses.
+
+[Start Milestone 4 in Colab](https://colab.research.google.com/github/Throwbias/mipds-deep-learning/blob/main/notebooks/Aaron_Tobias_MIPDS_Milestone_4_Video_Training.ipynb).
