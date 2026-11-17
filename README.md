@@ -21,6 +21,7 @@ joint landmarks and estimated two-dimensional joint angles.
 - docs: design documents and written work
 - experiments: experiment notes and results
 - mipds_language: note preprocessing and the language encoder
+- mipds_fusion: projected feature concatenation and integration audit
 
 ## Current notebooks
 
@@ -46,6 +47,7 @@ contains the active contract and the earlier Milestone 8 prototype.
 | 7 | [Language preprocessing pipeline](docs/milestones/Aaron_Tobias_MIPDS_Milestone_7_Language_Preprocessing_Pipeline.docx) |
 | 8 | [Language encoder integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_8_Language_Encoder_Integration.docx) |
 | 9 | [Pretrained language model integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_9_Pretrained_Language_Model_Integration.docx) |
+| 10 | [Multimodal fusion layer](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx) |
 
 Install the Milestone 9 dependencies from `mipds_language/requirements.txt`
 in an isolated Python 3.12 environment. A CPU installation of PyTorch 2.9.1
@@ -83,3 +85,28 @@ The output directory receives `audit.json` and `language_encoder.npz`. Load the
 checkpoint with NumPy and pass the tokenized notes to
 `mipds_language.encoder.encode_notes`. The Architecture Record specifies the
 output shapes and flags.
+
+## Multimodal fusion
+
+The fusion layer projects the frozen 2,048-wide vision features and 768-wide
+text features to 256 channels each. It concatenates vision before text and
+returns a 512-wide vector with presence and truncation flags. The callable
+interface checks clip IDs, model versions, feature widths, and numeric inputs.
+
+The [Milestone 10 audit](experiments/m10_fusion/audit.json) passed 24 checks on
+seven real cached vision vectors paired with fictional notes. The recorded
+fusion state uses seeded initial weights. The projections require paired-data
+training before a downstream prediction score can be evaluated.
+
+Use the Milestone 9 Python environment and pretrained model files. The vision
+input is the original `test_embeddings.npz` exported by the completed
+Milestone 6 notebook.
+
+```bash
+python -m mipds_fusion.audit --vision-embeddings /path/to/test_embeddings.npz --model-dir /path/to/distilbert --output /path/to/fusion-audit
+```
+
+The command exports `audit.json` and `fusion_initial_state.safetensors`.
+See the [Architecture Record](docs/ARCHITECTURE_RECORD.md) for output fields
+and the [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx)
+for the projection and fusion decisions.

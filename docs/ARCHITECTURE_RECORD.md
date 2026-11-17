@@ -135,3 +135,31 @@ flowchart TD
     image --> fusion["Fusion Layer — Week 10"]
     states --> fusion
 ```
+
+## Multimodal Fusion Layer
+
+Milestone 10 connects the 2,048-value global vision vector to the 768-value DistilBERT content mean with feature-level concatenation. Each stream has an affine projection to 256 channels, LayerNorm, and GELU. The vision branch has 525,056 trainable parameters and the text branch has 197,376. Their concatenation produces 512 channels. [Fusion implementation](../mipds_fusion/fusion.py)
+
+The adapter requires the recorded vision and language model versions and equal clip IDs in the same row order. It validates feature widths, float32 dtypes, boolean flags, and finite values in present modalities. Absent input placeholders are zeroed before projection, and the corresponding projected block is zeroed afterward.
+
+| Output | Type and shape | Meaning |
+| --- | --- | --- |
+| `fused_embedding` | float32 B × 512 | Vision channels 0–255 followed by text channels 256–511. |
+| `modality_mask` | bool B × 2 | Vision then text availability. |
+| `has_information` | bool B | At least one input is present. |
+| `text_truncated` | bool B | Language truncation flag carried to downstream review. |
+| `model_version` | string | `MIPDS-Fusion-ProjectedConcat-256x2-v1`. |
+
+The initial fusion state uses seed 5352. The integration audit loaded the recorded Milestone 6 embedding archive and checked all 570 frame IDs and labels against the original test manifest. Seven selected frames were paired with fictional notes to exercise the connection. All 24 checks passed, including missing modalities, input rejection, branch sensitivity, nonzero gradients in both projections, and checkpoint reload. The gradient test restored the initial fusion state after one temporary optimizer step. [Audit results](../experiments/m10_fusion/audit.json)
+
+The recorded fusion projections have not been fitted on paired training examples. Evaluation of a learned multimodal target requires annotated clip-note data grouped by client and clip across splits. The current outputs supply a typed connection for the next module. [Milestone 10 document](milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx)
+
+```mermaid
+flowchart TD
+    frame["Side-view frame"] --> vision["Frozen ResNet-50 global vector 2,048"]
+    note["Note with matching clip ID"] --> language["Frozen DistilBERT content mean 768"]
+    vision --> vproject["Vision projection 256"]
+    language --> tproject["Language projection 256"]
+    vproject --> fused["Presence masks and concatenation 512"]
+    tproject --> fused
+```
