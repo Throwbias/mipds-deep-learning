@@ -1,0 +1,62 @@
+[
+  {
+    "id": "p01",
+    "task": "Bodyweight squat from the side",
+    "prompt": "A full-body side-view photo of one adult doing a bodyweight squat in a small gym. Both feet and the entire body are visible, camera at hip height, plain background.",
+    "seed": 5352
+  },
+  {
+    "id": "p02",
+    "task": "Change the recording view",
+    "prompt": "A full-body front-view photo of one adult doing a bodyweight squat in a small gym. Both feet and the entire body are visible, camera at hip height, plain background.",
+    "seed": 5352
+  },
+  {
+    "id": "p03",
+    "task": "Goblet squat with a heel wedge",
+    "prompt": "A full-body side-view photo of an adult doing a goblet squat, holding one kettlebell at the chest. Both heels rest on a wooden wedge. Plain gym background.",
+    "seed": 5352
+  },
+  {
+    "id": "p04",
+    "task": "Staggered stance with dumbbells",
+    "prompt": "Full-body side-view photo of one adult doing a staggered-stance Romanian deadlift, holding one dumbbell in each hand. Rear foot lightly behind, both feet visible, plain gym.",
+    "seed": 5352
+  },
+  {
+    "id": "p05",
+    "task": "Seated press with back support",
+    "prompt": "An adult seated on a bench with an upright backrest, pressing one dumbbell in each hand overhead. Full-body side view, feet on the floor, simple gym.",
+    "seed": 5352
+  },
+  {
+    "id": "p06",
+    "task": "Bench supported one arm row",
+    "prompt": "Full-body side-view photo of an adult doing a one-arm dumbbell row with one knee and one hand supported on a flat bench. One dumbbell, simple gym.",
+    "seed": 5352
+  },
+  {
+    "id": "p07",
+    "task": "Plan an exercise recording space",
+    "prompt": "An empty home workout space with a tripod-mounted phone beside an exercise mat, viewed from above. The phone points across the mat for a side-view exercise recording. Plain room.",
+    "seed": 5352
+  },
+  {
+    "id": "p08",
+    "task": "Chair squat and body diversity",
+    "prompt": "A full-body side-view photograph of a plus-size older adult performing a squat toward a chair in a plain gym. Chair behind them, both feet on the floor, ordinary workout clothing.",
+    "seed": 5352
+  },
+  {
+    "id": "p09",
+    "task": "Stress test an exact angle label",
+    "prompt": "A clear side-view exercise illustration of an adult squatting, with exactly one arc at the right knee labelled '90 degrees'. Full body, simple white background.",
+    "seed": 5352
+  },
+  {
+    "id": "p10",
+    "task": "Stress test two matched movement panels",
+    "prompt": "An instructional two-panel photo showing the same adult from the side: standing before a squat on the left, bottom squat on the right. Same clothing, camera angle, and gym in both panels.",
+    "seed": 5352
+  }
+]

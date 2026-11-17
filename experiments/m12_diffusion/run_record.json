@@ -1,0 +1,450 @@
+{
+  "version": "MIPDS-Generation-SDTurbo-512-text-v1",
+  "model_id": "stabilityai/sd-turbo",
+  "revision": "b261bac6fd2cf515557d5d0707481eafa0485ec2",
+  "training_performed": false,
+  "mode": "pretrained_text_to_image_inference",
+  "mipds_bridge_evidence": "Synthetic contract fixtures only; examples use the standalone text entry",
+  "conditioning": "Checkpoint-native CLIP token states; M10 fused features are not soft prompt tokens",
+  "settings": {
+    "height": 512,
+    "width": 512,
+    "steps": 1,
+    "guidance_scale": 0.0,
+    "negative_prompt": null,
+    "scheduler": "EulerDiscreteScheduler",
+    "device": "cpu",
+    "dtype": "bfloat16",
+    "source_weights_variant": "fp16",
+    "threads": 4
+  },
+  "software": {
+    "torch": "2.9.1+cpu",
+    "diffusers": "0.35.2",
+    "transformers": "4.57.3",
+    "accelerate": "1.11.0",
+    "huggingface_hub": "0.36.0",
+    "safetensors": "0.7.0",
+    "numpy": "2.5.5",
+    "Pillow": "11.3.0"
+  },
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "load_seconds": 1.0768290040000466,
+  "model_manifest_sha256": "4c928148656e1ad01f8a40ed91262871a084cdf879fd6733c02e6d6c21fb8069",
+  "prompt_suite_sha256": "15bff38f0b72236cb106a14b1c76ebf8a0cc3457835e67242b227a75ff504f1d",
+  "checks": {
+    "bridge preserves source ID and truncation": true,
+    "bridge retains confirmed text without feature-to-token conversion": true,
+    "bridge permits vision-only and text-only sources": true,
+    "bridge rejects absent source modalities": true,
+    "bridge rejects unconfirmed descriptions": true,
+    "bridge rejects empty descriptions and invalid rows": true,
+    "bridge rejects mismatched versions and widths": true,
+    "bridge rejects nonfinite features and wrong dtypes": true,
+    "bridge rejects inconsistent availability and malformed flags": true,
+    "bridge rejects nonzero absent feature blocks": true,
+    "all pinned model files match the recorded manifest": true,
+    "ten distinct prompts produced RGB 512 outputs": true,
+    "all prompts fit the 77-token CLIP input": true,
+    "generated outputs are nonconstant": true,
+    "same seed reproduces the first RGB output in this runtime": true,
+    "all observed intermediate tensors are finite": true,
+    "CLIP context has shape 1 by 77 by 1024": true,
+    "U-Net predicts four latent channels": true,
+    "VAE decodes three image channels": true,
+    "one Euler step uses the final training timestep": true,
+    "all model parameters remain frozen without gradients": true
+  },
+  "component_parameter_counts": {
+    "text_encoder": 340387840,
+    "unet": 865910724,
+    "vae": 83653863
+  },
+  "tokenizer_max_length": 77,
+  "scheduler_timesteps": [
+    999.0
+  ],
+  "scheduler_sigmas": [
+    14.614646911621094,
+    0.0
+  ],
+  "vae_scaling_factor": 0.18215,
+  "upstream_safety_checker": null,
+  "attention_processor": [
+    "AttnProcessor2_0"
+  ],
+  "first_prompt_trace": {
+    "clip_embeddings": {
+      "shape": [
+        1,
+        77,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "clip_final_states": {
+      "shape": [
+        1,
+        77,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_timestep_embedding": {
+      "shape": [
+        1,
+        1280
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_input_convolution": {
+      "shape": [
+        1,
+        320,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_down_0": {
+      "shape": [
+        1,
+        320,
+        32,
+        32
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_down_1": {
+      "shape": [
+        1,
+        640,
+        16,
+        16
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_down_2": {
+      "shape": [
+        1,
+        1280,
+        8,
+        8
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_down_3": {
+      "shape": [
+        1,
+        1280,
+        8,
+        8
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_mid": {
+      "shape": [
+        1,
+        1280,
+        8,
+        8
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_up_0": {
+      "shape": [
+        1,
+        1280,
+        16,
+        16
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_up_1": {
+      "shape": [
+        1,
+        1280,
+        32,
+        32
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_up_2": {
+      "shape": [
+        1,
+        640,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_up_3": {
+      "shape": [
+        1,
+        320,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "unet_epsilon": {
+      "shape": [
+        1,
+        4,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "vae_post_quant_convolution": {
+      "shape": [
+        1,
+        4,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    },
+    "vae_decoder_rgb": {
+      "shape": [
+        1,
+        3,
+        512,
+        512
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    }
+  },
+  "sampler_trace": [
+    {
+      "step": 0,
+      "timestep": 999.0,
+      "shape": [
+        1,
+        4,
+        64,
+        64
+      ],
+      "dtype": "torch.bfloat16",
+      "finite": true
+    }
+  ],
+  "results": [
+    {
+      "id": "p01",
+      "task": "Bodyweight squat from the side",
+      "prompt": "A full-body side-view photo of one adult doing a bodyweight squat in a small gym. Both feet and the entire body are visible, camera at hip height, plain background.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p01.png",
+      "clip_token_count_with_boundaries": 40,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "b8b1d5902ee3fc5a6458e39763ec89aa3a20112c74a28e1215cf69f0c7233747",
+      "rgb_sha256": "1c80c4e0661ee2001878a6b6219a52b2a4c61d3f3ad2d838c203e1f669167903",
+      "seconds": 7.193517273999987,
+      "pixel_std": 48.244241994700204
+    },
+    {
+      "id": "p02",
+      "task": "Change the recording view",
+      "prompt": "A full-body front-view photo of one adult doing a bodyweight squat in a small gym. Both feet and the entire body are visible, camera at hip height, plain background.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p02.png",
+      "clip_token_count_with_boundaries": 40,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "e8cf2016639c4f7cab37040715bc16b4653b940ead79290c2d0860d8aa9d35f5",
+      "rgb_sha256": "9df2c752355b42cfa8376775a7fb6bc2416275dd05b6ad7b42061d40b3b23aec",
+      "seconds": 7.015199290000055,
+      "pixel_std": 51.851616183251245
+    },
+    {
+      "id": "p03",
+      "task": "Goblet squat with a heel wedge",
+      "prompt": "A full-body side-view photo of an adult doing a goblet squat, holding one kettlebell at the chest. Both heels rest on a wooden wedge. Plain gym background.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p03.png",
+      "clip_token_count_with_boundaries": 39,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "64abf40e6da2fc36c862e9bd40818148fea13f0eb5586d45df05eb6960568277",
+      "rgb_sha256": "daf373a209b9d45788491d390bc4d2ce749a8201b25e7409624cf8e5a1a71249",
+      "seconds": 7.2134660860000395,
+      "pixel_std": 40.312507282366155
+    },
+    {
+      "id": "p04",
+      "task": "Staggered stance with dumbbells",
+      "prompt": "Full-body side-view photo of one adult doing a staggered-stance Romanian deadlift, holding one dumbbell in each hand. Rear foot lightly behind, both feet visible, plain gym.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p04.png",
+      "clip_token_count_with_boundaries": 42,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "5b065df3cef8621a593d020a4311a86fc64ee45b85eb41360cc1aea5bfc5d383",
+      "rgb_sha256": "79f5cfba7f2ae99fe95bdb8e5bf67746d891682f1ed31781b68a2c54af8fff99",
+      "seconds": 6.956129339999961,
+      "pixel_std": 44.51412014764694
+    },
+    {
+      "id": "p05",
+      "task": "Seated press with back support",
+      "prompt": "An adult seated on a bench with an upright backrest, pressing one dumbbell in each hand overhead. Full-body side view, feet on the floor, simple gym.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p05.png",
+      "clip_token_count_with_boundaries": 37,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "5d248bdd1560bdc881c3f4f9980bcafe1657d89d65410de2b1979be0c0468255",
+      "rgb_sha256": "7b82e2f3c615710b48a7ac9a58dec246d19a7495e6404d354d389a680986dd4e",
+      "seconds": 6.827566303000026,
+      "pixel_std": 49.46512492760984
+    },
+    {
+      "id": "p06",
+      "task": "Bench supported one arm row",
+      "prompt": "Full-body side-view photo of an adult doing a one-arm dumbbell row with one knee and one hand supported on a flat bench. One dumbbell, simple gym.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p06.png",
+      "clip_token_count_with_boundaries": 39,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "7dcf6170c9f157afc2b86e7a8f3a4e0dc58f13e7b43dbd47955c8fdf2778d761",
+      "rgb_sha256": "a7571e836031627925373d3c53e5195b90c05a84a22f391ca6ebcb29584ee481",
+      "seconds": 6.9711505599999555,
+      "pixel_std": 47.75422878943384
+    },
+    {
+      "id": "p07",
+      "task": "Plan an exercise recording space",
+      "prompt": "An empty home workout space with a tripod-mounted phone beside an exercise mat, viewed from above. The phone points across the mat for a side-view exercise recording. Plain room.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p07.png",
+      "clip_token_count_with_boundaries": 39,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "376a44124a945642179f715dfa53bb8ca68b8cbc5bad7809b23d2def527a1a79",
+      "rgb_sha256": "959d8408281983fc84c540194e96754ca29dc88f42ff125c40a99f481d2a51d5",
+      "seconds": 6.908498919999943,
+      "pixel_std": 41.57595595233529
+    },
+    {
+      "id": "p08",
+      "task": "Chair squat and body diversity",
+      "prompt": "A full-body side-view photograph of a plus-size older adult performing a squat toward a chair in a plain gym. Chair behind them, both feet on the floor, ordinary workout clothing.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p08.png",
+      "clip_token_count_with_boundaries": 42,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "0b2b50619573fbd965bbe84a9705516555eac587a634b51bd25e682e24f7e619",
+      "rgb_sha256": "1010b6dc3406f27ce344f617171968ecd6a072ccb7e341468cac1b169528c0ef",
+      "seconds": 6.831461245000014,
+      "pixel_std": 52.51788599571792
+    },
+    {
+      "id": "p09",
+      "task": "Stress test an exact angle label",
+      "prompt": "A clear side-view exercise illustration of an adult squatting, with exactly one arc at the right knee labelled '90 degrees'. Full body, simple white background.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p09.png",
+      "clip_token_count_with_boundaries": 36,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "75e624351a2851446f277654f4884d3340be55b8d7eb427bdcb14408768da6cd",
+      "rgb_sha256": "89097593fa4b9a23180a9c123279a69defb364b024f6ba9f7e46473ba8fb4a85",
+      "seconds": 7.027288451000004,
+      "pixel_std": 57.70377581998672
+    },
+    {
+      "id": "p10",
+      "task": "Stress test two matched movement panels",
+      "prompt": "An instructional two-panel photo showing the same adult from the side: standing before a squat on the left, bottom squat on the right. Same clothing, camera angle, and gym in both panels.",
+      "seed": 5352,
+      "mode": "standalone_fictional_text",
+      "file": "images/p10.png",
+      "clip_token_count_with_boundaries": 42,
+      "clip_prompt_truncated": false,
+      "shape": [
+        512,
+        512,
+        3
+      ],
+      "image_mode": "RGB",
+      "png_sha256": "22a002e4dd331b2962577bed498388d991b102b65fbe19247458bd72cf208cab",
+      "rgb_sha256": "12345e5268e6044aad22b546fd64f4dc8dbcd11ddc18f754a019a8789d6b75e1",
+      "seconds": 7.2680665400000635,
+      "pixel_std": 48.96153140211285
+    }
+  ]
+}

@@ -23,6 +23,7 @@ joint landmarks and estimated two-dimensional joint angles.
 - mipds_language: note preprocessing and the language encoder
 - mipds_fusion: projected feature concatenation and integration audit
 - mipds_generative: conditional VAE architecture and generation contract checks
+- mipds_diffusion: pinned SD-Turbo inference and a reviewed text bridge
 
 ## Current notebooks
 
@@ -50,6 +51,7 @@ contains the active contract and the earlier Milestone 8 prototype.
 | 9 | [Pretrained language model integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_9_Pretrained_Language_Model_Integration.docx) |
 | 10 | [Multimodal fusion layer](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx) |
 | 11 | [Generative module](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx) |
+| 12 | [Conditioned diffusion pipeline](docs/milestones/Aaron_Tobias_MIPDS_Milestone_12_Conditioned_Diffusion_Pipeline.docx) |
 
 Install the Milestone 9 dependencies from `mipds_language/requirements.txt`
 in an isolated Python 3.12 environment. A CPU installation of PyTorch 2.9.1
@@ -137,3 +139,41 @@ python -m mipds_generative.audit --vision-embeddings /path/to/test_embeddings.np
 The command exports `audit.json` and `generator_initial_state.safetensors`.
 The [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx)
 specifies the architecture, conditioning path, training plan, and limits.
+
+## Conditioned diffusion
+
+Milestone 12 runs the pretrained `stabilityai/sd-turbo` checkpoint at revision
+`b261bac6fd2cf515557d5d0707481eafa0485ec2`. All 14 model files were verified
+against upstream Git or LFS hashes. The model's own CLIP text encoder supplies
+77 × 1,024 context states to its conditional U-Net. A single Euler step and the
+pretrained VAE produce each 512 × 512 RGB output.
+
+The [saved run](experiments/m12_diffusion/run_record.json) records ten prompts,
+source and output digests, intermediate tensor shapes, and 21 passing checks.
+The CPU run used bfloat16, four threads, guidance scale zero, and seed 5352 for
+every prompt. It performed no training. The first image reproduced exactly
+when repeated in the same runtime.
+
+The [visual review](experiments/m12_diffusion/reviews.json) rejects nine outputs
+for their specified tasks and identifies one limited generic concept. None is
+approved for client use. The outputs expose failures in camera views, equipment,
+anatomy, text, and panel consistency. Technical checks do not establish image
+suitability. [Original generated images](experiments/m12_diffusion/images)
+
+The bridge accepts confirmed trainer text linked to a M10 fusion row and
+preserves its source flags. The 512 fusion values validate context availability;
+they are not converted to CLIP tokens. Bridge checks use synthetic fixtures.
+The ten demonstration images use the standalone fictional-text entry.
+
+Install `mipds_diffusion/requirements.txt` in an isolated environment. For the
+recorded CPU run, install PyTorch 2.9.1 from the CPU wheel index first. Download
+the pinned model's configs, tokenizer, and three `fp16.safetensors` files listed
+in [the model manifest](mipds_diffusion/model_manifest.json).
+
+```bash
+python -m mipds_diffusion.generate --model-dir /path/to/sd-turbo --output /path/to/diffusion-run --device cpu --dtype bfloat16 --threads 4
+```
+
+The [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_12_Conditioned_Diffusion_Pipeline.docx)
+includes every prompt and output, its suitability assessment, a system diagram,
+and governance decisions about data consent, copyright, and client use.

@@ -217,3 +217,71 @@ flowchart TD
     context --> decoder
     decoder --> pixels["RGB proposal 64 by 64 for trainer review"]
 ```
+
+## Conditioned Diffusion Pipeline
+
+Milestone 12 adds the frozen pretrained `stabilityai/sd-turbo` checkpoint at revision `b261bac6fd2cf515557d5d0707481eafa0485ec2` as the active experimental image generator. The M11 conditional VAE remains an untrained architecture baseline. SD-Turbo uses adversarial diffusion distillation of Stable Diffusion 2.1; its discriminator is a training component, while inference uses CLIP, a conditional U-Net, Euler sampling, and a pretrained VAE decoder. [Publisher model card](https://huggingface.co/stabilityai/sd-turbo/blob/b261bac6fd2cf515557d5d0707481eafa0485ec2/README.md) and [ADD paper](https://arxiv.org/abs/2311.17042)
+
+### Selection and measured configuration
+
+The one-step checkpoint allows a complete 512 × 512 prompting experiment on the available CPU. Its reduced sampling cost is useful for research iteration, but fine equipment placement, anatomy, and measured geometry require their own evidence. The experiment used the checkpoint's FP16 weight files converted to bfloat16, four CPU threads, seed 5352, one Euler step, and guidance scale 0.0. No negative prompt or classifier-free guidance branch was used. All 14 source files matched upstream Git or LFS digests. [Pinned model manifest](../mipds_diffusion/model_manifest.json)
+
+| Component | Specification |
+| --- | --- |
+| Tokenizer | Checkpoint-native CLIP BPE, 49,408 vocabulary entries, padded to 77 positions. All ten prompts fit without truncation, with 36–42 tokens including boundaries. |
+| Text encoder | `CLIPTextModel`, 23 Transformer blocks, width 1,024, 16 heads, feed-forward width 4,096. Token and positional embeddings plus final normalization return B × 77 × 1,024. This is separate from the M9 DistilBERT channel. |
+| Initial latent | Seeded Gaussian B × 4 × 64 × 64 multiplied by initial sigma 14.6146469. |
+| U-Net | `UNet2DConditionModel`, input and output four channels, channel stages 320, 640, 1,280, 1,280, two residual layers per down stage, timestep embedding width 1,280, and cross-attention to the CLIP states. Three cross-attention down blocks, a plain down block, cross-attention mid block, then a plain up block and three cross-attention up blocks. |
+| Observed down outputs | B × 320 × 32 × 32; B × 640 × 16 × 16; B × 1,280 × 8 × 8; B × 1,280 × 8 × 8. |
+| Observed up outputs | B × 1,280 × 16 × 16; B × 1,280 × 32 × 32; B × 640 × 64 × 64; B × 320 × 64 × 64. Final convolution predicts B × 4 × 64 × 64 epsilon. |
+| Sampler | `EulerDiscreteScheduler`, epsilon prediction, trailing timestep spacing, one timestep at 999. Model input is scaled by the current sigma. One Euler update takes sigma from 14.6146469 to zero. |
+| VAE decode | Divide the denoised latent by 0.18215. The pretrained `AutoencoderKL` uses a post-quantization convolution and RGB decoder with four block stages and an eightfold spatial expansion. Output B × 3 × 512 × 512. |
+| Pixel conversion | Divide decoded RGB by two, add 0.5, clamp to [0, 1], convert channel-last, round to 8-bit, and save RGB PNG. |
+
+The loaded components contain 340,387,840 text-encoder parameters, 865,910,724 U-Net parameters, and 83,653,863 VAE parameters. They remain fixed. The original M11 32-value latent and 128-value context are not inputs to this pretrained decoder.
+
+### Connection to existing MIPDS modules
+
+`prepare_prompt` accepts a M10 `FusionOutput`, its ordered source IDs, a selected row, and confirmed trainer text. It checks dimensions, version, finite values, availability flags, and absent feature blocks, then retains the source ID and flags with the description. The adapter is a routing and provenance bridge. It does not infer a caption from the 512 features or convert them into CLIP tokens. A learned neural adapter between M10 and this diffusion model would require paired training and is not implemented. [Text bridge](../mipds_diffusion/bridge.py)
+
+The ten example generations use the standalone fictional-text entry. Bridge tests use synthetic contract fixtures. This distinction separates the demonstrated text-to-image run from an end-to-end source-video-conditioned system.
+
+```mermaid
+flowchart TD
+    frame["RGB frame 224 by 224"] --> vision["Frozen ResNet-50 vector 2048"]
+    note["Source note with clip ID"] --> language["Frozen DistilBERT mean 768"]
+    vision --> fusion["M10 projections and fusion 512 with flags"]
+    language --> fusion
+    fusion --> bridge["Confirmed text bridge with source provenance"]
+    bridge -.-> clip["CLIP context 77 by 1024"]
+    prompts["Ten standalone fictional prompts"] --> clip
+    noise["Seeded latent noise 4 by 64 by 64"] --> unet["Conditional U-Net epsilon prediction"]
+    clip --> unet
+    unet --> euler["One Euler step at timestep 999"]
+    euler --> vae["Pretrained VAE decode to RGB 512"]
+    vae --> review["Save provenance and review suitability"]
+```
+
+### Experiment and suitability
+
+The run produced ten 512 × 512 RGB images in a mean of 7.02 seconds each, excluding model load and the source-file checks. All 21 technical checks passed, including intermediate shapes, finite values, token limits, bridge validation, frozen parameters, and repeatability. Repeating the first prompt with the same seed reproduced identical RGB pixels in this runtime. This does not promise identical output on different hardware or package versions. [Run record](../experiments/m12_diffusion/run_record.json)
+
+The saved outputs received assistant-supported visual inspection. Nine fail critical constraints in their specified tasks. One is a limited generic front-view concept with unresolved hand detail. None is approved for client use. The failures include wrong camera views, floating or missing equipment, incomplete limbs, unreadable angle labels, and inconsistent movement panels. This single-seed, ten-prompt audit is exploratory and does not estimate population performance or fairness. [Prompts](../experiments/m12_diffusion/prompts.json), [all original outputs](../experiments/m12_diffusion/images), and [individual reviews](../experiments/m12_diffusion/reviews.json)
+
+## Governance and Ethics
+
+### Training data and consent
+
+The publisher identifies SD-Turbo's Stable Diffusion 2.1 lineage, but the inspected card does not provide an itemized consent and rights ledger for the distillation data. Consent and copyright clearance for the entire checkpoint's training history have not been established in this project. LAION documents that its metadata license does not transfer the rights in linked images. An accessible model or dataset is not evidence of permission from every depicted person or rights holder. [LAION dataset documentation](https://laion.ai/blog/laion-5b/)
+
+This experiment uses fictional adult exercise and equipment descriptions and performs no fine-tuning. No client videos, identifying photographs, health notes, or private names were supplied to the generator. Before any future client-data training, the project would require separate permission for model training and service use, an approved source inventory, and a deletion and retention procedure. These are planned governance requirements, not controls implemented by the current experiment.
+
+### Copyright and model terms
+
+The pinned checkpoint includes the Stability AI Community License dated July 5, 2024. The project uses it for academic research and records that exact file's digest. Commercial use would require reviewing the applicable terms. A model license does not settle the rights of every source image or guarantee ownership of every generated pixel. The U.S. Copyright Office's 2025 report explains that prompts alone do not establish sufficient human authorship of generated expression. The project makes no claim of exclusive copyright in these generated images. [Pinned license](https://huggingface.co/stabilityai/sd-turbo/blob/b261bac6fd2cf515557d5d0707481eafa0485ec2/LICENSE.md) and [Copyright Office report announcement](https://copyright.gov/newsnet/2025/1060.html)
+
+### Release and trainer oversight
+
+The checkpoint package contains no safety-checker module. The saved images were visually inspected for this report; no automated content-screening result is claimed. Prompts, seeds, checkpoint revision, software versions, output digests, and suitability decisions remain attached to the experiment. The present decision keeps all ten examples outside client use. Public release or integration into a trainer workflow would require an implemented output-approval step, appropriate content controls, and a broader audit across body types, equipment, and recording conditions.
+
+Generated images are illustrative proposals. They must not be represented as observations of a client's movement, used to infer real joint angles, or mixed into held-out evaluation data as real examples. The current system still requires separate implementation and validation for the originally planned pose measurements. [Milestone 12 submission](milestones/Aaron_Tobias_MIPDS_Milestone_12_Conditioned_Diffusion_Pipeline.docx)
