@@ -1,0 +1,134 @@
+{
+  "method": "Assistant visual inspection of all ten saved images, not a trainer validation study",
+  "scope": "One output per prompt at a shared seed and one-step setting; no retries or selected replacements",
+  "client_release_approved_count": 0,
+  "decisions": [
+    {
+      "id": "p01",
+      "suitability": "Reject for the specified task",
+      "observation": "The adult is shown from the front, with the whole body and feet visible. The requested side view is absent, and the hands blend into the hips.",
+      "failure": "Camera-view control and hand detail fail. This image cannot illustrate the requested side-view recording.",
+      "tags": [
+        "view_control",
+        "hand_anatomy"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "b8b1d5902ee3fc5a6458e39763ec89aa3a20112c74a28e1215cf69f0c7233747"
+    },
+    {
+      "id": "p02",
+      "suitability": "Limited generic concept",
+      "observation": "The front view and full-body framing match the broad request. The hands at the hips have poorly resolved fingers, and the squat stance is only an invented depiction.",
+      "failure": "Hand detail prevents use as an instructional reference. It could suggest broad front-view framing after correction and trainer review.",
+      "tags": [
+        "hand_anatomy",
+        "instructional_fidelity_unverified"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "e8cf2016639c4f7cab37040715bc16b4653b940ead79290c2d0860d8aa9d35f5"
+    },
+    {
+      "id": "p03",
+      "suitability": "Reject for the specified task",
+      "observation": "The figure is angled toward the viewer. There is no clear kettlebell held at the chest, loose weight-like objects appear nearby, and no heel wedge is visible.",
+      "failure": "The defining equipment, load placement, heel support, and side view are not reproduced.",
+      "tags": [
+        "view_control",
+        "equipment_placement",
+        "missing_wedge"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "64abf40e6da2fc36c862e9bd40818148fea13f0eb5586d45df05eb6960568277"
+    },
+    {
+      "id": "p04",
+      "suitability": "Reject for the specified task",
+      "observation": "A staggered stance appears in an oblique rear view. The weights are incomplete, including a floating handle-like object to the right of the figure.",
+      "failure": "A stance cue alone is insufficient when the requested two dumbbells and their hand connections are malformed.",
+      "tags": [
+        "equipment_integrity",
+        "view_control"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "5b065df3cef8621a593d020a4311a86fc64ee45b85eb41360cc1aea5bfc5d383"
+    },
+    {
+      "id": "p05",
+      "suitability": "Reject for the specified task",
+      "observation": "The adult sits on a flat bench in a side-oriented scene. Three dumbbell-like objects appear overhead, some floating, and an upright backrest is absent.",
+      "failure": "Equipment count, arm-to-weight connections, and back support fail despite the plausible gym setting.",
+      "tags": [
+        "floating_objects",
+        "equipment_count",
+        "missing_backrest"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "5d248bdd1560bdc881c3f4f9980bcafe1657d89d65410de2b1979be0c0468255"
+    },
+    {
+      "id": "p06",
+      "suitability": "Reject for the specified task",
+      "observation": "The output resembles a standing lunge or step arrangement. It has no flat bench or visible dumbbell, and the arms are incomplete or ghosted.",
+      "failure": "The exercise, bench contact, weight, and limb structure do not satisfy the row setup.",
+      "tags": [
+        "task_mismatch",
+        "missing_bench",
+        "missing_weight",
+        "limb_anatomy"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "7dcf6170c9f157afc2b86e7a8f3a4e0dc58f13e7b43dbd47955c8fdf2778d761"
+    },
+    {
+      "id": "p07",
+      "suitability": "Reject for the specified task",
+      "observation": "An overhead view shows a mat and a device lying on it, with partial stands at the image edges. There is no clear phone mounted on a tripod and aimed across the mat.",
+      "failure": "The room and mat are recognizable, but the recording arrangement that gives this prompt its purpose is unresolved.",
+      "tags": [
+        "recording_setup",
+        "missing_phone_mount"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "376a44124a945642179f715dfa53bb8ca68b8cbc5bad7809b23d2def527a1a79"
+    },
+    {
+      "id": "p08",
+      "suitability": "Reject for the specified task",
+      "observation": "The larger-bodied adult and squat scene partly match the description. The chair sits off to the left rather than clearly behind the hips, and the arms and hands are incomplete.",
+      "failure": "The chair relationship and limb anatomy fail. A single body-diversity prompt does not establish representative performance.",
+      "tags": [
+        "chair_location",
+        "limb_anatomy",
+        "view_control"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "0b2b50619573fbd965bbe84a9705516555eac587a634b51bd25e682e24f7e619"
+    },
+    {
+      "id": "p09",
+      "suitability": "Reject for the specified task",
+      "observation": "A side-oriented illustration is produced, but there is no clear knee arc or readable 90-degree label. Unreadable text and an extra foot-like form appear.",
+      "failure": "The image cannot support an exact angle claim. Its annotation and anatomy are unreliable.",
+      "tags": [
+        "angle_annotation",
+        "unreadable_text",
+        "extra_limb"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "75e624351a2851446f277654f4884d3340be55b8d7eb427bdcb14408768da6cd"
+    },
+    {
+      "id": "p10",
+      "suitability": "Reject for the specified task",
+      "observation": "Two panels appear, but both figures are standing. Their upper clothing, orientation, and backgrounds differ, and the requested bottom squat is absent.",
+      "failure": "Panel layout succeeds while movement state and cross-panel consistency fail.",
+      "tags": [
+        "movement_state",
+        "clothing_consistency",
+        "view_consistency"
+      ],
+      "client_release_approved": false,
+      "reviewed_png_sha256": "22a002e4dd331b2962577bed498388d991b102b65fbe19247458bd72cf208cab"
+    }
+  ]
+}

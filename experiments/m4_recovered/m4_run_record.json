@@ -1,0 +1,110 @@
+{
+  "milestone": 4,
+  "seed": 42,
+  "versions": {
+    "tensorflow": "2.21.0",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "pillow": "11.3.0",
+    "scikit-learn": "1.6.1",
+    "opencv-python-headless": "5.0.0.93"
+  },
+  "task": {
+    "name": "exercise_recognition",
+    "supervision": "source clip exercise label inherited by sampled frames"
+  },
+  "dataset": {
+    "doi": "10.17632/kgbb3yn47p.3",
+    "page": "https://data.mendeley.com/datasets/kgbb3yn47p/3",
+    "version": 3,
+    "license": "CC BY 4.0",
+    "archive": "Dataset Subject-wise.zip",
+    "archive_sha256": "6f6bfda33f094ba13e8509b1cd9a5c1e479062fd0e7749f6b6713db7d588ef84",
+    "camera_view": "side",
+    "max_frames_per_video": 12,
+    "sample_fps": 1.0,
+    "trim_fraction": 0.1,
+    "max_frame_edge": 640,
+    "form_label_role": "metadata only; both source form categories included",
+    "session_id_role": "conservative participant collection group; actual session dates unknown"
+  },
+  "backbone": "resnet50",
+  "pretrained_weights": "imagenet",
+  "nested_backbone": "resnet50",
+  "feature_layer": "conv5_block3_out",
+  "input_size": [
+    224,
+    224
+  ],
+  "resize_method": "bilinear",
+  "preprocessing": "resnet50",
+  "preprocessing_location": "outside_saved_model",
+  "classes": [
+    "dumbbell_side_bend",
+    "bent_over_row",
+    "bicep_curl",
+    "push_up",
+    "shoulder_press",
+    "squat",
+    "triceps_extension"
+  ],
+  "evaluation_scope": "unseen_people",
+  "checkpoint_path": "milestone4_outputs/m4_finetuned.keras",
+  "checkpoint_sha256": "0d59d2a0080d4fda25d1fa02742f1b98d976aa1578cf49b535055797d3f91152",
+  "classification_manifest_sha256": "5768942659550c4f6f40c8e1dc0eda418f621d6de537f38acac9157ec1aa4cef",
+  "split_sizes": {
+    "train": 2531,
+    "test": 570,
+    "validation": 559
+  },
+  "unique_clients_per_split": {
+    "test": 4,
+    "train": 17,
+    "validation": 4
+  },
+  "unique_sessions_per_split": {
+    "test": 4,
+    "train": 17,
+    "validation": 4
+  },
+  "stages": [
+    {
+      "stage": "1 \u2014 frozen",
+      "epochs_completed": 20,
+      "selected_validation_accuracy": 0.5992844104766846,
+      "last_epoch_validation_accuracy": 0.5921288132667542,
+      "initial_learning_rate": 0.0003
+    },
+    {
+      "stage": "2 \u2014 fine-tuned",
+      "epochs_completed": 9,
+      "selected_validation_accuracy": 0.7155635356903076,
+      "last_epoch_validation_accuracy": 0.7191413044929504,
+      "initial_learning_rate": 2.9999999999999997e-05
+    }
+  ],
+  "checkpoint_selection": "lowest validation loss within each stage",
+  "fine_tuning": {
+    "unfrozen_prefixes": [
+      "conv4_",
+      "conv5_"
+    ],
+    "batch_normalization_frozen": true,
+    "backbone_training_argument": false,
+    "schedule": "cosine decay",
+    "initial_learning_rate": 2.9999999999999997e-05
+  },
+  "frozen_weight_checks": {
+    "stage1": true,
+    "stage2": true,
+    "stage2_unfrozen_changed": true
+  },
+  "audit": {
+    "count": 20,
+    "selection": "seeded class-covered validation sample",
+    "incorrect": 7,
+    "low_confidence": 2,
+    "low_confidence_threshold": 0.6
+  },
+  "claim_boundary": "exercise type from still frames; no squat phase, form assessment, diagnosis, or temporal counting"
+}

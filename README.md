@@ -20,18 +20,160 @@ joint landmarks and estimated two-dimensional joint angles.
 - notebooks: hands-on activities and verification
 - docs: design documents and written work
 - experiments: experiment notes and results
-- src: reusable Python code
+- mipds_language: note preprocessing and the language encoder
+- mipds_fusion: projected feature concatenation and integration audit
+- mipds_generative: conditional VAE architecture and generation contract checks
+- mipds_diffusion: pinned SD-Turbo inference and a reviewed text bridge
 
 ## Current notebooks
 
-See [the notebook index](notebooks/README.md) for the earlier-week course
-notebooks, the latest successful Chapter 4 execution, and the current
-Milestone 4/5 notebooks.
+The current vision prototype recognizes seven exercise types in frames from
+public side-view recordings. Its recovered Milestone 4 training and Milestone 5
+representation experiments are indexed in the [notebook guide](notebooks/README.md).
+The [Architecture Record](docs/ARCHITECTURE_RECORD.md) documents the baseline,
+including how it evolved from the planned pose workflow.
 
-The temporary MIPDS task recognizes seven exercise types from public side-view
-recordings. Run Milestone 4 first to export the fine-tuned model and original
-participant split, then run Milestone 5 for detection and spatial features.
-Both milestone notebooks still require execution and result-based journal
-responses.
+The Milestone 6 audit evaluated the frozen classifier on 570 held-out frames.
+See the [Milestone 6 workflow](docs/VISION_RECOVERY_WORKFLOW.md) for the notebook
+and reproduction steps.
 
-[Start Milestone 4 in Colab](https://colab.research.google.com/github/Throwbias/mipds-deep-learning/blob/main/notebooks/Aaron_Tobias_MIPDS_Milestone_4_Video_Training.ipynb).
+## Language encoder
+
+The current language feature extractor uses pinned DistilBERT Base Uncased
+weights. Its frozen adapter returns 64 × 768 token states and a 768-value
+content mean for each note. The [Architecture Record](docs/ARCHITECTURE_RECORD.md)
+contains the active contract and the earlier Milestone 8 prototype.
+
+| Milestone | Submission |
+| --- | --- |
+| 7 | [Language preprocessing pipeline](docs/milestones/Aaron_Tobias_MIPDS_Milestone_7_Language_Preprocessing_Pipeline.docx) |
+| 8 | [Language encoder integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_8_Language_Encoder_Integration.docx) |
+| 9 | [Pretrained language model integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_9_Pretrained_Language_Model_Integration.docx) |
+| 10 | [Multimodal fusion layer](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx) |
+| 11 | [Generative module](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx) |
+| 12 | [Conditioned diffusion pipeline](docs/milestones/Aaron_Tobias_MIPDS_Milestone_12_Conditioned_Diffusion_Pipeline.docx) |
+
+Install the Milestone 9 dependencies from `mipds_language/requirements.txt`
+in an isolated Python 3.12 environment. A CPU installation of PyTorch 2.9.1
+was used for the audit. Download `config.json`, `vocab.txt`, and
+`model.safetensors` from revision
+`12040accade4e8a0f71eabdb258fecc2e7e948be` of
+`distilbert/distilbert-base-uncased`.
+[Pinned model files](https://huggingface.co/distilbert/distilbert-base-uncased/tree/12040accade4e8a0f71eabdb258fecc2e7e948be)
+
+```bash
+python -m mipds_language.pretrained_audit --model-dir /path/to/model --output /path/to/audit-results
+```
+
+The [saved Milestone 9 audit](experiments/m9_pretrained/audit.json) records 16
+passing integration checks and the fictional-note readout result. The CLI
+exports `audit.json` and `readout.npz`. Base weights remain retrievable from
+the pinned model repository.
+
+### Milestone 8 prototype
+
+Milestone 8 adds a two-block Transformer that takes the Milestone 7 note tensors.
+The CPU audit trains a reported-direction probe on fictional notes and exports
+held-out metrics, attention samples, and contract checks. The recorded run used
+NumPy 2.3.5 and Autograd 1.8.0. [Saved audit](experiments/m8_language/audit.json)
+
+Run the audit from the repo root in a Python environment with the audited NumPy
+and Autograd versions. Use the pinned BERT Base Uncased vocabulary from Milestone
+7. [Vocabulary source](https://github.com/microsoft/SDNet/blob/master/bert_vocab_files/bert-base-uncased-vocab.txt)
+
+```bash
+python -m mipds_language.audit --vocab /path/to/vocab.txt --output /path/to/audit-results
+```
+
+The output directory receives `audit.json` and `language_encoder.npz`. Load the
+checkpoint with NumPy and pass the tokenized notes to
+`mipds_language.encoder.encode_notes`. The Architecture Record specifies the
+output shapes and flags.
+
+## Multimodal fusion
+
+The fusion layer projects the frozen 2,048-wide vision features and 768-wide
+text features to 256 channels each. It concatenates vision before text and
+returns a 512-wide vector with presence and truncation flags. The callable
+interface checks clip IDs, model versions, feature widths, and numeric inputs.
+
+The [Milestone 10 audit](experiments/m10_fusion/audit.json) passed 24 checks on
+seven real cached vision vectors paired with fictional notes. The recorded
+fusion state uses seeded initial weights. The projections require paired-data
+training before a downstream prediction score can be evaluated.
+
+Use the Milestone 9 Python environment and pretrained model files. The vision
+input is the original `test_embeddings.npz` exported by the completed
+Milestone 6 notebook.
+
+```bash
+python -m mipds_fusion.audit --vision-embeddings /path/to/test_embeddings.npz --model-dir /path/to/distilbert --output /path/to/fusion-audit
+```
+
+The command exports `audit.json` and `fusion_initial_state.safetensors`.
+See the [Architecture Record](docs/ARCHITECTURE_RECORD.md) for output fields
+and the [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx)
+for the projection and fusion decisions.
+
+## Generative module
+
+Milestone 11 defines a conditional VAE for 64 × 64 RGB setup thumbnails intended
+for trainer review. The implemented architecture has 3,302,787 parameters.
+The condition adapter combines the 512 fusion features, two presence flags,
+and one truncation flag into a 128-value context. The posterior and decoder
+both receive that context. Generation samples a 32-value standard-normal
+latent and preserves the source clip IDs, flags, and seed.
+
+The [architecture audit](experiments/m11_generative/audit.json) passed 30 checks
+using the recorded M10 fusion state, real cached vision vectors, fictional
+notes, and an analytic RGB image fixture. The temporary optimizer step is
+reversed. The generator and fusion projections remain untrained on paired
+examples. Image quality and conditioning fidelity have not been evaluated.
+
+Use the same dependencies and input files as the M10 audit.
+
+```bash
+python -m mipds_generative.audit --vision-embeddings /path/to/test_embeddings.npz --model-dir /path/to/distilbert --output /path/to/generative-audit
+```
+
+The command exports `audit.json` and `generator_initial_state.safetensors`.
+The [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx)
+specifies the architecture, conditioning path, training plan, and limits.
+
+## Conditioned diffusion
+
+Milestone 12 runs the pretrained `stabilityai/sd-turbo` checkpoint at revision
+`b261bac6fd2cf515557d5d0707481eafa0485ec2`. All 14 model files were verified
+against upstream Git or LFS hashes. The model's own CLIP text encoder supplies
+77 × 1,024 context states to its conditional U-Net. A single Euler step and the
+pretrained VAE produce each 512 × 512 RGB output.
+
+The [saved run](experiments/m12_diffusion/run_record.json) records ten prompts,
+source and output digests, intermediate tensor shapes, and 21 passing checks.
+The CPU run used bfloat16, four threads, guidance scale zero, and seed 5352 for
+every prompt. It performed no training. The first image reproduced exactly
+when repeated in the same runtime.
+
+The [visual review](experiments/m12_diffusion/reviews.json) rejects nine outputs
+for their specified tasks and identifies one limited generic concept. None is
+approved for client use. The outputs expose failures in camera views, equipment,
+anatomy, text, and panel consistency. Technical checks do not establish image
+suitability. [Original generated images](experiments/m12_diffusion/images)
+
+The bridge accepts confirmed trainer text linked to a M10 fusion row and
+preserves its source flags. The 512 fusion values validate context availability;
+they are not converted to CLIP tokens. Bridge checks use synthetic fixtures.
+The ten demonstration images use the standalone fictional-text entry.
+
+Install `mipds_diffusion/requirements.txt` in an isolated environment. For the
+recorded CPU run, install PyTorch 2.9.1 from the CPU wheel index first. Download
+the pinned model's configs, tokenizer, and three `fp16.safetensors` files listed
+in [the model manifest](mipds_diffusion/model_manifest.json).
+
+```bash
+python -m mipds_diffusion.generate --model-dir /path/to/sd-turbo --output /path/to/diffusion-run --device cpu --dtype bfloat16 --threads 4
+```
+
+The [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_12_Conditioned_Diffusion_Pipeline.docx)
+includes every prompt and output, its suitability assessment, a system diagram,
+and governance decisions about data consent, copyright, and client use.

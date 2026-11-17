@@ -1,0 +1,110 @@
+{
+  "fusion_version": "MIPDS-Fusion-ProjectedConcat-256x2-v1",
+  "seed": 5352,
+  "trained_on_paired_examples": false,
+  "vision_version": "MIPDS-Vision-ResNet50-exercise-v1-0d59d2a0080d",
+  "language_version": "MIPDS-Language-DistilBERT-12040accade4-mean-v1",
+  "vision_archive_sha256": "6d3ed8e9fa1a878b3f79472c8ef20b6cfee62975fd1437d7018860161236333f",
+  "manifest_sha256": "5768942659550c4f6f40c8e1dc0eda418f621d6de537f38acac9157ec1aa4cef",
+  "text_encoder_state_sha256": "bf28efb0d247ac0a4721be78321a251bf18db915c906d6bc753d74c89f609047",
+  "fusion_state_sha256": "327f531fef7004933417645b49e8c123b2efa436139cf06e54bb66fa08b870d9",
+  "checkpoint_sha256": "efb5470afdaadc8becb6bd5e4cc64586f881db0170cd43aac6348d282ddfcd22",
+  "fusion_parameters": 722432,
+  "batch_size": 7,
+  "vision_input_shape": [
+    7,
+    2048
+  ],
+  "text_input_shape": [
+    7,
+    768
+  ],
+  "fused_output_shape": [
+    7,
+    512
+  ],
+  "checks": {
+    "cached vision archive and complete test membership match": true,
+    "actual language features have the expected width": true,
+    "joint features have shape 7 by 512 and float32": true,
+    "both-present flags are true and output is finite": true,
+    "identical inputs produce identical outputs": true,
+    "missing text zeros its block and preserves vision": true,
+    "missing vision zeros its block and preserves text": true,
+    "both missing produces zero output and false availability": true,
+    "nonfinite placeholders in absent modalities are masked": true,
+    "a present nonfinite vector is rejected": true,
+    "incorrect vision dimensions are rejected": true,
+    "legacy 256-wide language features are rejected": true,
+    "mismatched clip IDs are rejected": true,
+    "wrong model versions are rejected": true,
+    "text truncation flags survive the handoff": true,
+    "a word change reaches only the text block": true,
+    "a vision perturbation reaches only the vision block": true,
+    "individual and batched calls agree": true,
+    "empty batches preserve the output contract": true,
+    "both projection weights receive finite nonzero gradients": true,
+    "an optimizer step changes the fusion state": true,
+    "the original untrained fusion state is restored": true,
+    "pretrained language weights and gradients are fixed": true,
+    "saved fusion weights reproduce the forward output": true
+  },
+  "projection_gradient_norms": {
+    "vision_projection": 1.0550024509429932,
+    "text_projection": 0.8802609443664551
+  },
+  "input_sensitivity_l2": {
+    "word_left_to_right": 0.6288466453552246,
+    "vision_channel_plus_0_1": 0.023809533566236496
+  },
+  "pairs": [
+    {
+      "frame_id": "105f97a407375bab_00000044",
+      "exercise_label": "dumbbell_side_bend",
+      "clip_id": "videos/public_subject_018/subject_018_abs_bad_side.mp4",
+      "fictional_note": "Dumbbell side bend, 25 lb for 10. My left side felt steadier."
+    },
+    {
+      "frame_id": "6b1586fd1db676d3_00000046",
+      "exercise_label": "bent_over_row",
+      "clip_id": "videos/public_subject_018/subject_018_back_good_side.mp4",
+      "fictional_note": "Bent-over row, 35 lb for 8. I changed the bench angle."
+    },
+    {
+      "frame_id": "7b2cb21d20afbe9f_00000049",
+      "exercise_label": "bicep_curl",
+      "clip_id": "videos/public_subject_008/subject_008_bicep_curl_good_side.mp4",
+      "fictional_note": "Bicep curl, 15 lb for 9. I shortened the last rep."
+    },
+    {
+      "frame_id": "0d929360090f5e3a_00000023",
+      "exercise_label": "push_up",
+      "clip_id": "videos/public_subject_018/subject_018_push_up_bad_side.mp4",
+      "fictional_note": "Push-up, 12 reps. My feet stayed in the same place."
+    },
+    {
+      "frame_id": "0822fd5dd9560449_00000046",
+      "exercise_label": "shoulder_press",
+      "clip_id": "videos/public_subject_018/subject_018_shoulder_good_side.mp4",
+      "fictional_note": "Shoulder press, 20 lb for 8. I used an upright backrest."
+    },
+    {
+      "frame_id": "21014302d231ec00_00000046",
+      "exercise_label": "squat",
+      "clip_id": "videos/public_subject_018/subject_018_squat_good_side.mp4",
+      "fictional_note": "Squat, 45 lb for 6. The camera was on the right and I moved left on the last rep."
+    },
+    {
+      "frame_id": "16850e6324b9dd1f_00000047",
+      "exercise_label": "triceps_extension",
+      "clip_id": "videos/public_subject_018/subject_018_tricep_good_side.mp4",
+      "fictional_note": "Triceps extension, 30 lb for 10. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I filmed the next set from the same spot. I kept my upper arm still through the final rep."
+    }
+  ],
+  "software": {
+    "torch": "2.9.1+cpu",
+    "transformers": "4.57.3",
+    "numpy": "2.5.5",
+    "safetensors": "0.7.0"
+  }
+}
