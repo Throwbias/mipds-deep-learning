@@ -1,0 +1,13 @@
+{
+  "n_test": 570,
+  "top1_accuracy": 0.6,
+  "mean_confidence": 0.8828030153063305,
+  "signed_confidence_gap": 0.28280301530633056,
+  "ece": 0.28280301530633056,
+  "n_bins": 10,
+  "confidence_min": 0.23711656033992767,
+  "confidence_max": 0.9999999403953552,
+  "test_errors": 228,
+  "balanced_accuracy": 0.59390589569161,
+  "macro_f1": 0.5764605379344522
+}

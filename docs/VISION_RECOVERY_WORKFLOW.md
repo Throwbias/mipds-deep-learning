@@ -6,7 +6,7 @@ The [Architecture Record](ARCHITECTURE_RECORD.md) reconciles the earlier design 
 | --- | --- | --- |
 | 4 · Backbone | Recovered training output, validation audit, run record, and split manifest | Finish the journal observations from the original audit images |
 | 5 · Detection | Reviewed threshold sweep, heatmap observations, and two pooling probes | Verify a clean rerun after the written review if preparing a submission |
-| 6 · Vision audit | Prepared notebook, metrics export, and Model Card and Interface Specification templates | Run the original checkpoint on the test split and complete the visual review |
+| 6 · Vision audit | Completed 570-frame audit, 60.00% top-1 accuracy, error review, Model Card, and Interface Specification | Reproduce with the original checkpoint and frame files as needed |
 
 The original Milestone 5 assignment uses 20 domain images, confidence thresholds of 0.25, 0.50, and 0.75, and concatenated pooling at 1 × 1, 2 × 2, and 4 × 4. Use these settings to reproduce the reviewed experiment. The separate YOLO detector uses pretrained COCO labels.
 

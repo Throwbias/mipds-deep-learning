@@ -17,7 +17,7 @@ outputs; those outputs are not evidence of a new run by Aaron.
 | Milestone 4: vision backbone installation | [Recovered run](Aaron_Tobias_MIPDS_Milestone_4_Executed_Recovered.ipynb) · [original scaffold](Aaron_Tobias_MIPDS_Milestone_4_Video_Training.ipynb) | Keras ResNet-50 training logs, validation metrics, and 20-frame audit table. Journal observations remain in progress. |
 | Chapter 5: detection exploration | [hands_on_ch5.ipynb](hands_on_ch5.ipynb) | Current course reference snapshot. Code matches the supplied Chapter 5 notebook; unexecuted. |
 | Milestone 5: detection and spatial features | [Reviewed run](Aaron_Tobias_MIPDS_Milestone_5_Reviewed.ipynb) · [original scaffold](Aaron_Tobias_MIPDS_Milestone_5_Working_Notebook.ipynb) | Saved threshold and pooling results with written review. A final clean rerun after that review is pending. |
-| Milestone 6: vision audit | [Audit notebook](Aaron_Tobias_MIPDS_Milestone_6_Vision_Audit.ipynb) | Prepared for the original checkpoint and held-out test split. Test results and final reports are pending. |
+| Milestone 6: vision audit | [Completed audit notebook](Aaron_Tobias_MIPDS_Milestone_6_Vision_Audit.ipynb) | Saved 570-frame evaluation, 60.00% top-1 accuracy, completed error review, Model Card, and Interface Specification. Figure outputs are in the original notebook export. |
 
 ## Continue from the recovered vision run
 
