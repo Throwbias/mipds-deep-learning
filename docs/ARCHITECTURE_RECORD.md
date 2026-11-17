@@ -163,3 +163,57 @@ flowchart TD
     vproject --> fused["Presence masks and concatenation 512"]
     tproject --> fused
 ```
+
+## Generative Module
+
+Milestone 11 selects a conditional variational autoencoder for illustrative 64 × 64 RGB exercise setup thumbnails. The proposed output supports trainer review of recording context. The implemented model defines an untrained architecture, version `MIPDS-Generative-CVAE64-z32-c128-v1`. Its output does not establish movement geometry or a validated coaching recommendation. [Implementation](../mipds_generative/cvae.py)
+
+### Components and dimensions
+
+| Component | Exact specification |
+| --- | --- |
+| Fusion input | `MIPDS-Fusion-ProjectedConcat-256x2-v1`, finite float32 B × 512, B positive. Vision precedes text. |
+| Condition input | Concatenate 512 features, vision presence, text presence, and text truncation, in that order. Boolean flags are cast to float32, producing B × 515. |
+| Condition adapter | Linear 515 → 256, SiLU, Linear 256 → 128, LayerNorm over 128 channels, SiLU. Output context is B × 128. |
+| Training target | Approved RGB setup image, resized with bilinear interpolation to 64 × 64, channel-first float32 values in [0, 1]. This preprocessing is separate from the ResNet input path. |
+| Image encoder | Four Conv2d layers, kernel 4, stride 2, padding 1, channels 3 → 32 → 64 → 128 → 256. SiLU follows each convolution. Output B × 256 × 4 × 4 flattens to B × 4,096. |
+| Approximate posterior | Concatenate 4,096 image values and 128 context values. Linear 4,224 → 256 with SiLU, then separate Linear 256 → 32 mean and log-variance heads. Clamp log variance to [−12, 12]. |
+| Latent sampling | Training uses mean plus standard deviation times standard-normal noise. Generation samples B × 32 from a fixed standard-normal prior, independently of the condition. |
+| Decoder | Concatenate latent 32 and context 128. Linear 160 → 4,096 with SiLU, reshape to B × 256 × 4 × 4. Four ConvTranspose2d layers with kernel 4, stride 2, padding 1 use channels 256 → 128 → 64 → 32 → 3. Hidden stages use SiLU, final stage uses Sigmoid. |
+| Model size | 3,302,787 parameters, including 165,248 in the condition adapter. The separate M10 fusion module has 722,432 parameters. |
+
+The same 128-value context reaches the posterior and the decoder. A fixed normal prior keeps the first implementation compact. This is a conditional-decoder VAE variant, rather than the learned conditional prior in the structured-output model of Sohn et al. [Kingma and Welling](https://arxiv.org/abs/1312.6114) and [Sohn et al.](https://papers.nips.cc/paper_files/paper/2015/hash/8d55a249e6baa5c06772297520da2051-Abstract.html)
+
+### Integration and output contract
+
+The routing layer joins frame features and notes by clip ID through the M10 adapter, then passes its `FusionOutput` to the VAE. The generative adapter checks the fusion version, dimensions, float32 values, flag consistency, and zero blocks for absent modalities. Vision-only and text-only inputs are permitted. Rows with neither modality and empty batches are rejected. `sample` takes the same clip IDs and an explicit integer seed. It samples the prior and decodes without a target image. The posterior image encoder is used during training and reconstruction checks.
+
+| Generated output | Contract |
+| --- | --- |
+| `pixels` | float32 B × 3 × 64 × 64 in [0, 1]. |
+| `clip_ids` | Tuple of B nonempty IDs supplied by the routing layer. |
+| `modality_mask`, `text_truncated` | Original bool B × 2 and bool B flags. |
+| `seed` | Sampling seed for the local PyTorch generator. |
+| `model_version`, `fusion_version` | Generator and source fusion interface versions. |
+| `requires_trainer_review` | Always true. |
+
+### Training plan and current evidence
+
+The implemented objective averages a per-image unit-variance Gaussian reconstruction negative log likelihood, omitting its constant term, plus beta times the Gaussian posterior-to-standard-normal KL divergence. The reconstruction term is half the sum of squared pixel errors; KL sums over 32 latent channels. Both terms average over the batch. A proposed training run would warm beta from zero to one over ten epochs and use a fixed beta of one for validation. These are initial design choices, awaiting validation.
+
+Training requires actual approved target images paired with source clip features and accurate notes. Preserve the participant and source-clip boundaries before fitting. Keep the existing M6 held-out test vectors for interface checks and later evaluation. The proposed training scope fits the CVAE and M10 projections jointly while the pretrained vision and language encoders remain fixed, for 4,025,219 trainable parameters. Generated thumbnails require assessment of exercise and equipment consistency, visual defects, conditioning changes, and memorization on held-out clients before use in trainer review.
+
+The CPU architecture audit passed 30 checks. It reproduced the M10 initial fusion digest, used seven real cached vision vectors with fictional notes, and used an analytic RGB grid for image and gradient checks. All six VAE parameter groups received finite nonzero gradients. A temporary optimizer step changed the VAE and was reversed; checkpoint reload reproduced prior samples. The language and fusion states remained fixed. Both the VAE and fusion projections remain untrained on paired examples. The run establishes interface behavior and gradient flow, with image quality still unmeasured. [Audit evidence](../experiments/m11_generative/audit.json) and [Milestone 11 document](milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx)
+
+```mermaid
+flowchart TD
+    fused["M10 fusion 512 and three flags"] --> context["Condition adapter 515 to 128"]
+    target["Training RGB image 64 by 64"] --> image["Image encoder to 4096"]
+    image --> posterior["Posterior mean and log variance 32"]
+    context --> posterior
+    posterior --> latent["Reparameterized latent 32"]
+    prior["Standard normal latent 32 at inference"] --> decoder["Decoder with latent 32 and context 128"]
+    latent --> decoder
+    context --> decoder
+    decoder --> pixels["RGB proposal 64 by 64 for trainer review"]
+```

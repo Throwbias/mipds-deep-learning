@@ -1,0 +1,101 @@
+{
+  "model_version": "MIPDS-Generative-CVAE64-z32-c128-v1",
+  "seed": 5352,
+  "trained_on_paired_examples": false,
+  "image_fixture": "Analytic RGB coordinate grid for tensor and gradient checks only",
+  "quality_evaluation": "Not performed. Initialized outputs are not exercise illustrations.",
+  "source_pairs": "Seven M10 held-out vision vectors with fictional notes, used only for interface checks",
+  "vision_archive_sha256": "6d3ed8e9fa1a878b3f79472c8ef20b6cfee62975fd1437d7018860161236333f",
+  "fusion_state_sha256": "327f531fef7004933417645b49e8c123b2efa436139cf06e54bb66fa08b870d9",
+  "text_encoder_state_sha256": "bf28efb0d247ac0a4721be78321a251bf18db915c906d6bc753d74c89f609047",
+  "generator_state_sha256": "9df0e3ee90cbcd3601c47e3ce14db7467f3441ecbb02a75fb41e7f65d1991d49",
+  "checkpoint_sha256": "e745b4de58aa7b40e5067157b77f8fcea5be7525a5af95010789b4061e9bf14f",
+  "parameters": 3302787,
+  "parameter_groups": {
+    "condition_adapter": 165248,
+    "image_encoder": 690144,
+    "posterior": 1081600,
+    "mean_head": 8224,
+    "log_variance_head": 8224,
+    "decoder": 1349347
+  },
+  "input_shapes": {
+    "fusion": [
+      7,
+      512
+    ],
+    "condition_input": [
+      7,
+      515
+    ],
+    "context": [
+      7,
+      128
+    ],
+    "latent": [
+      7,
+      32
+    ]
+  },
+  "output_shape": [
+    7,
+    3,
+    64,
+    64
+  ],
+  "checks": {
+    "cached vision and initial fusion state match M10": true,
+    "condition concatenation has 515 float32 channels": true,
+    "condition fields retain their documented order": true,
+    "condition adapter returns finite 128-wide states": true,
+    "posterior mean and log variance have 32 channels": true,
+    "reconstruction has finite float32 RGB shape and range": true,
+    "prior generation has finite RGB shape and range": true,
+    "same seed reproduces generated tensors": true,
+    "different latent samples reach the output": true,
+    "a text change reaches the decoder with fixed noise": true,
+    "output preserves source IDs flags seed and review requirement": true,
+    "vision-only and text-only inputs are supported": true,
+    "a row with both modalities absent is rejected": true,
+    "wrong fusion versions and widths are rejected": true,
+    "nonfinite fusion features and inconsistent availability are rejected": true,
+    "nonzero absent feature blocks are rejected": true,
+    "wrong image sizes and numeric ranges are rejected": true,
+    "nonfinite images and wrong dtypes are rejected": true,
+    "wrong latent and noise dimensions are rejected": true,
+    "empty batches and missing clip IDs are rejected": true,
+    "deterministic single and batch reconstructions agree": true,
+    "Gaussian and KL losses are finite and nonnegative": true,
+    "ideal reconstruction and standard-normal posterior have zero loss": true,
+    "KL weighting follows the specified loss": true,
+    "negative and nonfinite KL coefficients are rejected": true,
+    "all six generative parameter groups receive finite nonzero gradients": true,
+    "a temporary optimizer step changes the VAE state": true,
+    "the untrained VAE state is restored": true,
+    "language and fusion weights stay fixed without gradients": true,
+    "checkpoint reload reproduces prior generation": true
+  },
+  "gradient_norms": {
+    "condition_adapter": 0.3668295443058014,
+    "image_encoder": 0.03142291307449341,
+    "posterior": 0.5169380903244019,
+    "mean_head": 0.23151759803295135,
+    "log_variance_head": 0.134672150015831,
+    "decoder": 34.64144515991211
+  },
+  "untrained_output_sensitivity_l2": {
+    "changed_note_same_noise": 0.0012382152490317822,
+    "changed_noise": 0.09602531045675278
+  },
+  "fixture_objective": {
+    "total": 442.4988708496094,
+    "reconstruction": 442.46209716796875,
+    "kl": 0.0367627814412117
+  },
+  "software": {
+    "torch": "2.9.1+cpu",
+    "transformers": "4.57.3",
+    "numpy": "2.5.5",
+    "safetensors": "0.7.0"
+  }
+}

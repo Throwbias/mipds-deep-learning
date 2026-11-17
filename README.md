@@ -22,6 +22,7 @@ joint landmarks and estimated two-dimensional joint angles.
 - experiments: experiment notes and results
 - mipds_language: note preprocessing and the language encoder
 - mipds_fusion: projected feature concatenation and integration audit
+- mipds_generative: conditional VAE architecture and generation contract checks
 
 ## Current notebooks
 
@@ -48,6 +49,7 @@ contains the active contract and the earlier Milestone 8 prototype.
 | 8 | [Language encoder integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_8_Language_Encoder_Integration.docx) |
 | 9 | [Pretrained language model integration](docs/milestones/Aaron_Tobias_MIPDS_Milestone_9_Pretrained_Language_Model_Integration.docx) |
 | 10 | [Multimodal fusion layer](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx) |
+| 11 | [Generative module](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx) |
 
 Install the Milestone 9 dependencies from `mipds_language/requirements.txt`
 in an isolated Python 3.12 environment. A CPU installation of PyTorch 2.9.1
@@ -110,3 +112,28 @@ The command exports `audit.json` and `fusion_initial_state.safetensors`.
 See the [Architecture Record](docs/ARCHITECTURE_RECORD.md) for output fields
 and the [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_10_Multimodal_Fusion_Layer.docx)
 for the projection and fusion decisions.
+
+## Generative module
+
+Milestone 11 defines a conditional VAE for 64 × 64 RGB setup thumbnails intended
+for trainer review. The implemented architecture has 3,302,787 parameters.
+The condition adapter combines the 512 fusion features, two presence flags,
+and one truncation flag into a 128-value context. The posterior and decoder
+both receive that context. Generation samples a 32-value standard-normal
+latent and preserves the source clip IDs, flags, and seed.
+
+The [architecture audit](experiments/m11_generative/audit.json) passed 30 checks
+using the recorded M10 fusion state, real cached vision vectors, fictional
+notes, and an analytic RGB image fixture. The temporary optimizer step is
+reversed. The generator and fusion projections remain untrained on paired
+examples. Image quality and conditioning fidelity have not been evaluated.
+
+Use the same dependencies and input files as the M10 audit.
+
+```bash
+python -m mipds_generative.audit --vision-embeddings /path/to/test_embeddings.npz --model-dir /path/to/distilbert --output /path/to/generative-audit
+```
+
+The command exports `audit.json` and `generator_initial_state.safetensors`.
+The [design document](docs/milestones/Aaron_Tobias_MIPDS_Milestone_11_Generative_Module.docx)
+specifies the architecture, conditioning path, training plan, and limits.
