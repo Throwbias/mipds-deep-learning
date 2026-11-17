@@ -24,14 +24,12 @@ joint landmarks and estimated two-dimensional joint angles.
 
 ## Current notebooks
 
-See [the notebook index](notebooks/README.md) for the earlier-week course
-notebooks, the latest successful Chapter 4 execution, and the current
-Milestone 4/5 notebooks.
+The current vision prototype recognizes seven exercise types in frames from
+public side-view recordings. Its recovered Milestone 4 training and Milestone 5
+representation experiments are indexed in the [notebook guide](notebooks/README.md).
+The [Architecture Record](docs/ARCHITECTURE_RECORD.md) documents the baseline,
+including how it evolved from the planned pose workflow.
 
-The temporary MIPDS task recognizes seven exercise types from public side-view
-recordings. Run Milestone 4 first to export the fine-tuned model and original
-participant split, then run Milestone 5 for detection and spatial features.
-Both milestone notebooks still require execution and result-based journal
-responses.
-
-[Start Milestone 4 in Colab](https://colab.research.google.com/github/Throwbias/mipds-deep-learning/blob/main/notebooks/Aaron_Tobias_MIPDS_Milestone_4_Video_Training.ipynb).
+The next milestone evaluates the existing checkpoint on 570 held-out frames.
+See the [Milestone 6 workflow](docs/VISION_RECOVERY_WORKFLOW.md) for the notebook,
+required files, and report steps.
